@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>PRO калькулятор</title>
+
+<style>
+body{
+    font-family: Arial;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.app{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    width:420px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+.label{
+    margin-top:12px;
+}
+
+.result{
+    margin-top:20px;
+    padding:15px;
+    background:#f3f6ff;
+    border-radius:10px;
+    line-height:1.6;
+}
+
+.explain{
+    margin-top:10px;
+    font-size:13px;
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>📦 PRO калькулятор / PRO kalkulyator</h1>
+
+<div class="label">Длина (см) / Uzunligi (sm)</div>
+<input id="length" oninput="calc()">
+
+<div class="label">Ширина (см) / Kengligi (sm)</div>
+<input id="width" oninput="calc()">
+
+<div class="label">Высота (см) / Balandligi (sm)</div>
+<input id="height" oninput="calc()">
+
+<div class="label">Вес (кг) / Vazni (kg)</div>
+<input id="weight" oninput="calc()">
+
+<div class="result">
+Объем / Hajm: <b id="volume">—</b><br>
+Доставка / Yetkazib berish: <b id="delivery">—</b><br>
+Класс / Tovar klassi: <b id="class">—</b>
+
+<div class="explain" id="explain">
+Введите данные / Ma'lumot kiriting
+</div>
+</div>
+
+</div>
+
+<script>
+function calc(){
+
+let L = +document.getElementById("length").value;
+let W = +document.getElementById("width").value;
+let H = +document.getElementById("height").value;
+let weightKg = +document.getElementById("weight").value;
+
+if(!L || !W || !H){
+    return;
+}
+
+// перевод единиц
+let weight = weightKg * 1000;
+let Lmm = L * 10;
+let Wmm = W * 10;
+let Hmm = H * 10;
+
+// объем
+let raw = (Lmm*Wmm*Hmm)/1000000;
+let liters = Math.ceil(raw);
+
+// доставка
+let delivery = ((liters-1)*250)+5250;
+
+// сортировка
+let dims=[Lmm,Wmm,Hmm].sort((a,b)=>b-a);
+let longest=dims[0];
+let middle=dims[1];
+let smallest=dims[2];
+
+let result="";
+let explanation="";
+
+// классификация
+if(longest>700 && middle<=350 && smallest<=100){
+    result="ДЛИННОМЕР / UZUN BUYUM";
+    explanation="Узкий длинномерный товар / Uzun va tor mahsulot";
+}
+else if(longest<=400 && middle<=250 && smallest<=250 && weight<=3500){
+    result="МГТ / KICHIK GABARIT";
+    explanation="Подходит для тарного хранения / Qutilarda saqlash mumkin";
+}
+else if(longest<=600 && middle<=600 && smallest<=450 && weight<=10000){
+    result="СГТ / O'RTA GABARIT";
+    explanation="Стандартная стеллажная ячейка / Standart saqlash uchun";
+}
+else if(longest<=1800 && middle<=1200 && smallest<=800 && weight<=30000){
+    result="КГТ / KATTA GABARIT";
+    explanation="Крупногабаритный товар / Katta hajmli mahsulot";
+}
+else if(weight<=60000){
+    result="FBS / DBS";
+    explanation="Ограниченная логистика / Cheklangan logistika";
+}
+else{
+    result="ТОЛЬКО DBS / FAQAT DBS";
+    explanation="Превышены ограничения / Cheklovdan oshgan";
+}
+
+// вывод
+document.getElementById("volume").innerText = liters + " л";
+document.getElementById("delivery").innerText = delivery.toLocaleString()+" сум";
+document.getElementById("class").innerText = result;
+document.getElementById("explain").innerText = explanation;
+
+}
+</script>
+
+</body>
+</html>
